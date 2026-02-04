@@ -1,133 +1,139 @@
-🖥️ OS Process Monitor with Gesture-Based Interaction
-📌 Project Overview
+# 🖥️ OS Process Monitor with Gesture-Based Interaction
 
-This project is a Python-based Operating System Process Monitoring and Control System that visualizes and manages running processes in real time.
+## 📌 Project Overview
 
-It combines core OS concepts with a gesture-driven interaction layer, inspired by Virtual Reality (VR) systems, but implemented using a standard camera instead of specialized VR hardware.
+This project is a **Python-based Operating System Process Monitoring and Control System** that visualizes and manages running processes in real time.
 
-The system continuously monitors CPU usage, memory consumption, and process states, and allows users to interact with OS processes using hand gestures captured via a camera.
+It combines core OS concepts with a **gesture-driven interaction layer**, inspired by Virtual Reality (VR) systems, but implemented using a **standard camera instead of specialized VR hardware**.
 
-🎯 Objectives
+The system continuously monitors **CPU usage, memory consumption, and process states**, and allows users to interact with OS processes using **hand gestures captured via a camera**.
 
-Monitor OS processes in real time
+---
 
-Observe CPU scheduling and memory usage behavior
+## 🎯 Objectives
 
-Provide a safe user-space interface to the operating system
+- Monitor OS processes in real time  
+- Observe CPU scheduling and memory usage behavior  
+- Provide a safe user-space interface to the operating system  
+- Enable intuitive, gesture-based process control  
+- Demonstrate practical applications of OS concepts using modern interaction techniques  
 
-Enable intuitive, gesture-based process control
+---
 
-Demonstrate practical applications of OS concepts using modern interaction techniques
+## 🧠 Core OS Concepts Covered
 
-🧠 Core OS Concepts Covered
+- Process Management  
+- CPU Scheduling Observation  
+- Memory Management (Resident Set Size)  
+- Process States (running, stopped, etc.)  
+- User–Kernel Interaction (read-only + controlled actions)  
+- Continuous System Monitoring  
 
-Process Management
+---
 
-CPU Scheduling Observation
+## 🏗️ System Architecture
 
-Memory Management (Resident Set Size)
-
-Process States (running, stopped, etc.)
-
-User–Kernel Interaction (read-only + controlled actions)
-
-Continuous System Monitoring
-
-🏗️ System Architecture
+```
 +-----------------------------+
-| Interaction Layer           |  Camera-based hand gestures
+| Interaction Layer | Camera-based hand gestures
 +-----------------------------+
-| Visualization Layer         |  2D / VR-inspired process space
+| Visualization Layer | 2D / VR-inspired process space
 +-----------------------------+
-| Control Layer               |  Terminate / manage processes
+| Control Layer | Terminate / manage processes
 +-----------------------------+
-| Monitoring Layer            |  Continuous process sampling
+| Monitoring Layer | Continuous process sampling
 +-----------------------------+
-| OS Interface Layer          |  psutil-based OS access
+| OS Interface Layer | psutil-based OS access
 +-----------------------------+
+```
 
-⚙️ Current Implementation Status
-✅ Step 1: OS Interface Layer
+---
 
-Accesses live OS process information using psutil
+## ⚙️ Current Implementation Status
 
-Retrieves:
+### ✅ Step 1: OS Interface Layer
 
-Process ID (PID)
+- Accesses live OS process information using `psutil`
+- Retrieves:
+  - Process ID (PID)
+  - Process name
+  - CPU usage
+  - Memory usage (RSS)
+  - Process state
 
-Process name
+### ✅ Step 2: Continuous Monitoring Layer
 
-CPU usage
+- Periodically samples OS process data  
+- Sorts processes by CPU usage  
+- Displays real-time scheduling behavior  
+- Supports graceful termination  
 
-Memory usage (RSS)
+---
 
-Process state
+## 🖐️ Gesture-Based Interaction Layer (Planned)
 
-✅ Step 2: Continuous Monitoring Layer
+### 🎥 Hand Tracking Behavior
 
-Periodically samples OS process data
+- Open palm facing camera → tracking starts  
+- Hand movement tracked in:
+  - Left
+  - Right
+  - Up
+  - Down  
+- Front/back depth movement is intentionally ignored  
 
-Sorts processes by CPU usage
+---
 
-Displays real-time scheduling behavior
+### 🧩 Gesture-to-Action Mapping
 
-Supports graceful termination
+| Gesture | Action |
+|------|------|
+| Open palm facing camera | Start tracking hand movement |
+| Move palm | Navigate process grid |
+| Palm over process square | Highlight process |
+| Open palm → closed fist | Terminate highlighted process |
+| Two fingers raised (✌️) | Exit monitoring system |
 
-🖐️ Gesture-Based Interaction Layer (Planned)
-🎥 Hand Tracking Behavior
+---
 
-Open palm facing camera → tracking starts
+## 🔐 Safety Design
 
-Hand movement tracked in:
+- Kernel-critical processes are protected  
+- System processes cannot be terminated  
+- Process termination only occurs after explicit gesture confirmation  
 
-Left
+---
 
-Right
+## 📁 Project Structure
 
-Up
-
-Down
-
-Front/back depth movement is intentionally ignored
-
-🧩 Gesture-to-Action Mapping
-Gesture	Action
-Open palm facing camera	Start tracking hand movement
-Move palm	Navigate process grid
-Palm over process square	Highlight process
-Open palm → closed fist	Terminate highlighted process
-Two fingers raised (✌️)	Exit monitoring system
-🔐 Safety Design
-
-Kernel-critical processes are protected
-
-System processes cannot be terminated
-
-Process termination only occurs after explicit gesture confirmation
-
-📁 Project Structure
-os_vr_monitor/
-├── step1_os_interface.py
-├── step2_monitor.py
-├── interaction_layer/
-├── visualization_layer/
+```
+os_monitor/
+├── systeminfo.py
+├── monitor.py
 └── README.md
+```
 
-🧪 How to Run
+---
+
+## 🧪 How to Run
+
+```bash
 pip install psutil
-python step2_monitor.py
+python monitor.py
+```
 
-
-Stop monitoring:
-
-Press Ctrl + C
+To stop monitoring, press `Ctrl + C`
 
 (Future) Show ✌️ gesture to camera
 
-📚 Academic Justification
+---
+
+## 📚 Academic Justification
 
 This project demonstrates how operating system concepts can be integrated with modern interaction techniques, providing a practical, observable system for understanding process scheduling, memory usage, and system monitoring.
 
-🏁 Conclusion
+---
+
+## 🏁 Conclusion
 
 The OS Process Monitor bridges the gap between theoretical OS concepts and interactive system design, offering a future-ready, extensible platform for experimentation.
