@@ -1,106 +1,55 @@
-# 🖥️ OS Process Monitor with Gesture-Based Interaction
+# 🖥️ Vision-Controlled Virtual Task Manager
 
-## 📌 Project Overview
+## 📌 Overview
 
-This project is a **Python-based Operating System Process Monitoring and Control System** that visualizes and manages running processes in real time.
+A **camera-based gesture-controlled virtual task manager** that lets you visualize and manage running OS processes using hand gestures. No VR hardware needed — just a standard webcam.
 
-It combines core OS concepts with a **gesture-driven interaction layer**, inspired by Virtual Reality (VR) systems, but implemented using a **standard camera instead of specialized VR hardware**.
-
-The system continuously monitors **CPU usage, memory consumption, and process states**, and allows users to interact with OS processes using **hand gestures captured via a camera**.
+Each running process is displayed as a **colored square** whose size reflects its memory usage. You interact with processes using **hand gestures** captured via your webcam through MediaPipe.
 
 ---
 
-## 🎯 Objectives
+## 🎯 Features
 
-- Monitor OS processes in real time  
-- Observe CPU scheduling and memory usage behavior  
-- Provide a safe user-space interface to the operating system  
-- Enable intuitive, gesture-based process control  
-- Demonstrate practical applications of OS concepts using modern interaction techniques  
-
----
-
-## 🧠 Core OS Concepts Covered
-
-- Process Management  
-- CPU Scheduling Observation  
-- Memory Management (Resident Set Size)  
-- Process States (running, stopped, etc.)  
-- User–Kernel Interaction (read-only + controlled actions)  
-- Continuous System Monitoring  
+- **Real-time process monitoring** — live CPU, memory, and status via `psutil`
+- **Gesture-based control** — open palm to track, closed fist to terminate
+- **Visual process grid** — squares sized by memory, colored by status
+- **Kill confirmation** — hold fist for 1 second (charge bar) to prevent accidental kills
+- **Crush animation** — shrink + fade effect when a process is terminated
+- **Camera preview** — live webcam feed in the corner showing your hand
+- **Protected processes** — system-critical processes cannot be terminated
+- **Termination logging** — all kills logged to `terminated_log.txt`
 
 ---
 
-## 🏗️ System Architecture
-
-```
-+-----------------------------+
-| Interaction Layer | Camera-based hand gestures
-+-----------------------------+
-| Visualization Layer | 2D / VR-inspired process space
-+-----------------------------+
-| Control Layer | Terminate / manage processes
-+-----------------------------+
-| Monitoring Layer | Continuous process sampling
-+-----------------------------+
-| OS Interface Layer | psutil-based OS access
-+-----------------------------+
-```
-
----
-
-## ⚙️ Current Implementation Status
-
-### ✅ Step 1: OS Interface Layer
-
-- Accesses live OS process information using `psutil`
-- Retrieves:
-  - Process ID (PID)
-  - Process name
-  - CPU usage
-  - Memory usage (RSS)
-  - Process state
-
-### ✅ Step 2: Continuous Monitoring Layer
-
-- Periodically samples OS process data  
-- Sorts processes by CPU usage  
-- Displays real-time scheduling behavior  
-- Supports graceful termination  
-
----
-
-## 🖐️ Gesture-Based Interaction Layer (Planned)
-
-### 🎥 Hand Tracking Behavior
-
-- Open palm facing camera → tracking starts  
-- Hand movement tracked in:
-  - Left
-  - Right
-  - Up
-  - Down  
-- Front/back depth movement is intentionally ignored  
-
----
-
-### 🧩 Gesture-to-Action Mapping
+## 🧩 Gesture Controls
 
 | Gesture | Action |
-|------|------|
-| Open palm facing camera | Start tracking hand movement |
-| Move palm | Navigate process grid |
-| Palm over process square | Highlight process |
-| Open palm → closed fist | Terminate highlighted process |
-| Two fingers raised (✌️) | Exit monitoring system |
+|---------|--------|
+| 🖐️ Open palm | Start tracking / move cursor |
+| ✊ Closed fist (hold 1s) | Terminate highlighted process |
+| Move hand | Navigate the process grid |
 
 ---
 
-## 🔐 Safety Design
+## 🏗️ Architecture
 
-- Kernel-critical processes are protected  
-- System processes cannot be terminated  
-- Process termination only occurs after explicit gesture confirmation  
+```
+┌─────────────────────────────────────────┐
+│  main.py         — Entry point & loop   │
+├─────────────────────────────────────────┤
+│  gesture.py      — MediaPipe hand       │
+│                    tracking & gestures   │
+├─────────────────────────────────────────┤
+│  visualizer.py   — Pygame rendering,    │
+│                    grid, animations     │
+├─────────────────────────────────────────┤
+│  process_mgr.py  — psutil process       │
+│                    collection & control │
+├─────────────────────────────────────────┤
+│  config.py       — All constants        │
+│  logger.py       — Termination logging  │
+└─────────────────────────────────────────┘
+```
 
 ---
 
@@ -108,32 +57,67 @@ The system continuously monitors **CPU usage, memory consumption, and process st
 
 ```
 os_monitor/
-├── systeminfo.py
-├── monitor.py
-└── README.md
+├── main.py          ← run this
+├── gesture.py       ← hand tracking (MediaPipe)
+├── visualizer.py    ← Pygame GUI & animations
+├── process_mgr.py   ← process data & termination
+├── config.py        ← settings & constants
+├── logger.py        ← termination log writer
+├── README.md
+├── terminated_log.txt  (auto-created)
+├── SOW_*.docx
+└── SRS_*.docx
 ```
 
 ---
 
-## 🧪 How to Run
+## ⚙️ Requirements
+
+- Python 3.8+
+- Webcam
+
+### Install Dependencies
 
 ```bash
-pip install psutil
-python monitor.py
+pip install psutil opencv-python mediapipe pygame
 ```
 
-To stop monitoring, press `Ctrl + C`
+---
 
-(Future) Show ✌️ gesture to camera
+## 🚀 How to Run
+
+```bash
+python main.py
+```
+
+1. The app window opens showing a grid of running processes
+2. Show your **open palm** to the camera to start tracking
+3. Move your hand to hover over a process square
+4. **Close your fist** and hold for 1 second to terminate the process
+5. Press **ESC** or close the window to exit
 
 ---
 
-## 📚 Academic Justification
+## 🔐 Safety
 
-This project demonstrates how operating system concepts can be integrated with modern interaction techniques, providing a practical, observable system for understanding process scheduling, memory usage, and system monitoring.
+- Kernel and system processes (PID 0, 4, csrss, lsass, explorer, etc.) are **protected**
+- Termination requires a deliberate 1-second fist hold
+- Only user-owned processes can be terminated
 
 ---
 
-## 🏁 Conclusion
+## 🧠 OS Concepts Demonstrated
 
-The OS Process Monitor bridges the gap between theoretical OS concepts and interactive system design, offering a future-ready, extensible platform for experimentation.
+- Process Management & States
+- CPU Scheduling Observation
+- Memory Management (RSS)
+- User–Kernel Space Interaction
+- Continuous System Monitoring
+
+---
+
+## 📚 Academic Context
+
+Prepared by **Siddharth Deulkar** | VIT, Pune | Roll No. 39 | CS-K | SY
+
+This project demonstrates how operating system concepts can be combined with modern computer vision techniques for an interactive, gesture-based process management experience.
