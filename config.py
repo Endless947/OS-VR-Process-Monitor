@@ -14,7 +14,7 @@ MIN_SQUARE_SIZE = 30
 MAX_SQUARE_SIZE = 90
 
 # ------------------- Data Refresh ---------------------------
-DATA_REFRESH_INTERVAL = 3.0  # seconds between psutil snapshots
+DATA_REFRESH_INTERVAL = 15.0  # seconds between psutil snapshots
 MAX_PROCESSES_SHOWN = 30     # cap to keep the grid readable
 
 # ------------------- Gesture --------------------------------
@@ -51,6 +51,25 @@ PROTECTED_NAMES = {
     "system", "system idle process", "csrss.exe", "smss.exe",
     "wininit.exe", "services.exe", "lsass.exe", "winlogon.exe",
     "svchost.exe", "dwm.exe", "explorer.exe", "registry",
+}
+
+# Background / system processes to hide from the grid
+SYSTEM_PROCESS_NAMES = {
+    "svchost.exe", "csrss.exe", "smss.exe", "wininit.exe",
+    "services.exe", "lsass.exe", "winlogon.exe", "dwm.exe",
+    "system", "system idle process", "registry", "conhost.exe",
+    "runtimebroker.exe", "searchhost.exe", "searchindexer.exe",
+    "sihost.exe", "taskhostw.exe", "ctfmon.exe", "fontdrvhost.exe",
+    "dllhost.exe", "spoolsv.exe", "lsaiso.exe", "audiodg.exe",
+    "wudfhost.exe", "wmiprvse.exe", "msdtc.exe", "dashost.exe",
+    "securityhealthservice.exe", "sgrmbroker.exe",
+    "memcompression", "idle", "secure system",
+    "smartscreen.exe", "shellexperiencehost.exe",
+    "startmenuexperiencehost.exe", "textinputhost.exe",
+    "applicationframehost.exe", "lockapp.exe",
+    "searchprotocolhost.exe", "searchfilterhost.exe",
+    "wlanext.exe", "unsecapp.exe", "jusched.exe",
+    "nvspcaps64.exe", "nvcontainer.exe",
 }
 
 # ------------------- Logging --------------------------------

@@ -1,28 +1,74 @@
 # ============================================================
 #  process_mgr.py — OS Process collection, protection & termination
+#  Filters to only show user-visible applications (with windows)
 # ============================================================
 
+import ctypes
+import ctypes.wintypes
 import psutil
 from config import (
     MAX_PROCESSES_SHOWN, PROTECTED_PIDS, PROTECTED_NAMES,
-    STATUS_COLORS,
+    STATUS_COLORS, SYSTEM_PROCESS_NAMES,
 )
+
+
+# ---- Win32: collect PIDs that own at least one visible window -----
+user32 = ctypes.windll.user32
+
+# Callback type for EnumWindows
+WNDENUMPROC = ctypes.WINFUNCTYPE(
+    ctypes.wintypes.BOOL,
+    ctypes.wintypes.HWND,
+    ctypes.wintypes.LPARAM,
+)
+
+
+def _get_windowed_pids():
+    """Return a set of PIDs that own at least one visible, titled window."""
+    pids = set()
+
+    def _cb(hwnd, _):
+        if user32.IsWindowVisible(hwnd):
+            # Only count windows that have a non-empty title
+            length = user32.GetWindowTextLengthW(hwnd)
+            if length > 0:
+                pid = ctypes.wintypes.DWORD()
+                user32.GetWindowThreadProcessId(hwnd, ctypes.byref(pid))
+                pids.add(pid.value)
+        return True  # continue enumeration
+
+    user32.EnumWindows(WNDENUMPROC(_cb), 0)
+    return pids
 
 
 def get_processes():
     """
     Return a list of process dicts sorted by CPU% desc.
+    Only includes processes that have a visible window (user apps).
     Each dict: { pid, name, cpu, memory, status, color }
     """
+    windowed_pids = _get_windowed_pids()
+
     procs = []
     for p in psutil.process_iter(['pid', 'name', 'cpu_percent', 'memory_info', 'status']):
         try:
             info = p.info
             pid = info['pid']
+
+            # Skip protected PIDs
             if pid in PROTECTED_PIDS:
                 continue
 
+            # Only show processes that have a visible window
+            if pid not in windowed_pids:
+                continue
+
             name = info['name'] or "Unknown"
+
+            # Skip known system / background process names
+            if name.lower() in SYSTEM_PROCESS_NAMES:
+                continue
+
             cpu = info['cpu_percent'] or 0.0
             mem_bytes = info['memory_info'].rss if info['memory_info'] else 0
             mem_mb = round(mem_bytes / (1024 * 1024), 1)
